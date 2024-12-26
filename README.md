@@ -80,6 +80,3 @@ The framework demonstrates:
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-## References
-Refer to the comprehensive project report for additional details and citations.
-
