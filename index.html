@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PII Detection</title>
+    <style>
+        body {
+            background-color: rgb(45, 45, 42);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 450px;
+            padding: 10px;
+            font-size: 16px;
+            resize: vertical;
+            background-color: rgb(48, 48, 45);
+            color: white;
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: rgb(48, 48, 45);
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">PII Detection</h1>
+    <div class="container">
+        <textarea id="input-text">
+            Waseem Mabunda 591 Smith Centers Apt. 656 Joshuamouth, RI 95963 ( The Netherlands) 410.526.1667 vpi@mn.nl Mind Mapping, Challenge: For several years I have been working for an Asset manager in the Netherlands. During this period I have been involved in many projects. Certainly in the world of asset management, much has changed in recent years in the area of Law and Regulations. What I mainly experience in these projects is that all departments have a different interest in starting a new project. This certainly does not benefit the project. How do you get everyone to complete a project in the common interest and how do you motivate everyone who participate in the project? Selection: An improvement project can be approached in different ways. The most common way is the scrum approach. We work in multidisciplinary teams that work in short sprints, with a fixed length of 1 to 4 weeks. Cooperation is very important and everyone must be able to respond quickly to changing circumstances. Scrum is based on the theory of empirical process control, or empiricism. Empiricism assumes that knowledge arises from experience and making decisions based on what is known. I chose mind mapping because I am looking for a way to show the creativity colleagues always have at the start of a project, to keep this up to date and very important to keep it visible. But also with the thoughts to keep colleagues motivated and to show how their creativity contributes to the project. So I want to see if scrum can be combined with Design Thinking and especially with Mind mapping. Application: When starting a new project at work, I checked whether it is workable to combine the scrum approach with Mind Mapping. The central theme was to increase the STP (Straight through processing) rate for a specific product that we trade with an x percentage. As a scrum team, we have tried to provide insight into the various topics related to the 'increase STP rate' via a paper diagram. Each team member could indicate in this diagram his or her creativity which related to increasing the STP rate. After this we went to see if there was a connection between certain ideas. We quickly learned that certain ideas could be combined and that certain steps in the project could be skipped. By combining scrum work and mind mapping, we were able to go live with implementation faster and increase STP speed step by step. By making the project visible through a diagram, colleagues also indicated that this gave them more energy to participate in the project. D e s i g n T h i n k i n g Insight: The insight I got to combine scrum with mind mapping (Design thinking) is that if you make everyone's creativity and thinking visible through Mind mapping, you will come sooner to a solid solution to complete a project. The feedback we received is that it also gives more energy to colleagues who have participated in this project. The biggest challenge was to create support for this new way of working. At the beginning of the project, we showed a short video of how mind mapping works. This gave us immediate support from our fellow team members to combine scrum with mind mapping. https://www.youtube.com/watch?v=tIBN9VJ0S4a The conclusion is that you definitely can combine scrum and Design thinking. Approach: In terms of approach, I wouldn't be much different from what I did in this project. I only see advantages of combining scrum with mind mapping. As described in the alinia insight, there are only benefits.
+        </textarea>
+        <div class="button-container">
+            <button>Detect</button>
+        </div>
+        <br>
+        <table>
+            <tr>
+                <th>Token</th>
+                <th>PII Type</th>
+            </tr>
+
+        
+        </table>
+    </div>
+</body>
+<script>
+    var button = document.querySelector('button');
+    var inputText = document.querySelector('#input-text');
+
+    button.addEventListener('click', function() {
+        // get the text from the textarea
+        var text = inputText.value; 
+        button.textContent = "Detecting...";
+        button.disabled = true;
+        button.style.backgroundColor = "grey";
+        
+        // clear the table
+        var table = document.querySelector('table');
+        table.innerHTML = '<tr><th>Token</th><th>PII Type</th></tr>';
+
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        const urlencoded = new URLSearchParams();
+        urlencoded.append("text", text);
+
+        const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: "follow",
+        setTimeout: 10000
+        };
+
+        fetch("http://127.0.0.1:1235/detect", requestOptions)
+        .then((response) => {
+            // Check if response is successful
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // Parse response as JSON
+            return response.json();
+        })
+        .then((json) => {
+            // Output the parsed JSON
+            console.log(json);
+            // Get the table
+            var table = document.querySelector('table');
+            // Clear the table
+            table.innerHTML = '<tr><th>Token</th><th>PII Type</th></tr>';
+            // Loop through the JSON and add the data to the table
+            json.forEach(function(item) {
+                var row = document.createElement('tr');
+                var token = document.createElement('td');
+                var piiType = document.createElement('td');
+                token.textContent = item.token;
+                piiType.textContent = item.label;
+                row.appendChild(token);
+                row.appendChild(piiType);
+                table.appendChild(row);
+            });
+            // Change button text back to "Detect"
+            button.textContent = "Detect";
+            // Enable the button
+            button.disabled = false;
+            button.style.backgroundColor = "#4CAF50";
+        })
+        .catch((error) => console.error(error));
+        });
+
+</script>
+</html>
